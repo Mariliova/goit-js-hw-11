@@ -2,7 +2,7 @@
 import 'material-icons/iconfont/material-icons.css';
 import '../node_modules/modern-normalize/modern-normalize.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import './css/styles.css';
+import './sass/index.scss';
 
 Notify.init({});
 
@@ -19,25 +19,21 @@ const NOTIFY_INFO =
   "We're sorry, but you've reached the end of search results.";
 
 {
-  /* <li class="card">
-  <img class="card__img" src="" alt="" />
-  <ul class="card__description list">
-    <li>
-      <p class="cards__label"></p>
-      <p class="cards__number"></p>
-    </li>
-    <li>
-      <p class="cards__label"></p>
-      <p class="cards__number"></p>
-    </li>
-    <li>
-      <p class="cards__label"></p>
-      <p class="cards__number"></p>
-    </li>
-    <li>
-      <p class="cards__label"></p>
-      <p class="cards__number"></p>
-    </li>
-  </ul>
-</li>; */
+  // <div class="photo-card">
+  //   <img src="" alt="" loading="lazy" />
+  //   <div class="info">
+  //     <p class="info-item">
+  //       <b>Likes</b>
+  //     </p>
+  //     <p class="info-item">
+  //       <b>Views</b>
+  //     </p>
+  //     <p class="info-item">
+  //       <b>Comments</b>
+  //     </p>
+  //     <p class="info-item">
+  //       <b>Downloads</b>
+  //     </p>
+  //   </div>
+  // </div>;
 }

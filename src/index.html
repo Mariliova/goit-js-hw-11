@@ -9,20 +9,26 @@
   <body>
     <div class="search-bar">
       <div class="container">
-        <form class="search-form">
+        <form class="search-form" id="search-form">
           <input
             class="search-box"
             type="text"
+            name="searchQuery"
+            autocomplete="off"
             placeholder="Search images..."
-          /><button class="search-btn" type="submit">
+          />
+          <button class="search-btn" type="submit">
             <i class="material-icons">search</i>
           </button>
         </form>
       </div>
     </div>
     <div class="container">
-      <ul class="cards list"></ul>
+      <div class="gallery">
+        <!-- Картки зображень -->
+      </div>
     </div>
+    <button type="button" class="load-more">Load more</button>
 
     <script src="index.js" type="module"></script>
   </body>
