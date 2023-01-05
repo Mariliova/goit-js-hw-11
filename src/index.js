@@ -1,4 +1,6 @@
-import { fetchImages } from './js/fetchImages';
+import ImagesApiService from './js/images-service';
+import renderCards from './js/render-cards';
+import PageInterface from './js/page-interface';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import 'material-icons/iconfont/material-icons.css';
 import './sass/index.scss';
@@ -11,79 +13,54 @@ const refs = {
   loadMoreBtn: document.querySelector('.load-more'),
 };
 
-const NOTIFY_SUCCESS = 'Hooray! We found totalHits images.';
-const NOTIFY_FAILURE =
-  'Sorry, there are no images matching your search query. Please try again.';
-const NOTIFY_INFO =
-  "We're sorry, but you've reached the end of search results.";
+const imagesApiService = new ImagesApiService();
+const pageInterface = new PageInterface();
+let imagesLoaded = 0;
 
-refs.loadMoreBtn.classList.add('visually-hidden');
+const NOTIFY = {
+  SUCCESS: 'Hooray! We found totalHits images.',
+  FAILURE:
+    'Sorry, there are no images matching your search query. Please try again.',
+  INFO: "We're sorry, but you've reached the end of search results.",
+};
+
+pageInterface.hide(refs.loadMoreBtn);
+
 refs.searchForm.addEventListener('submit', onSearchFormSubmit);
+refs.loadMoreBtn.addEventListener('click', onLoadMoreBtnClick);
 
 function onSearchFormSubmit(e) {
   e.preventDefault();
-  const query = e.currentTarget.elements.searchQuery.value;
-  resetPage();
+  pageInterface.reset(refs.gallery);
+  pageInterface.hide(refs.loadMoreBtn);
 
-  fetchImages(query)
-    .then(markup)
-    .catch(() => {
-      // ивкоеується навідь якщо повернувся порожній масив
-      // Notify.failure(NOTIFY_FAILURE);
-      // resetPage();???
-    });
+  imagesApiService.query = e.currentTarget.elements.searchQuery.value;
+  imagesApiService.resetPageCount();
+  imagesApiService.fetchImages().then(markup);
 }
 
-function markup({ data: { hits } }) {
-  const hitsLength = hits.length;
-  console.log(hitsLength);
-  if (hitsLength <= 0) {
-    Notify.failure(NOTIFY_FAILURE);
+function onLoadMoreBtnClick() {
+  imagesApiService.fetchImages().then(markup);
+}
+
+function markup({ data: { hits: imgArr, totalHits: limit } }) {
+  const imgArrLength = imgArr.length;
+
+  if (imgArrLength <= 0) {
+    Notify.failure(NOTIFY.FAILURE);
+    pageInterface.hide(refs.loadMoreBtn);
     return;
   }
-  Notify.success(NOTIFY_SUCCESS);
-  renderCards(hits);
-}
 
-function renderCards(hits) {
-  const cardsMarkup = hits
-    .map(
-      ({
-        webformatURL,
-        largeImageURL,
-        tags: alt,
-        likes,
-        views,
-        comments,
-        downloads,
-      }) =>
-        `<div class="photo-card">
-    <img src="${webformatURL}" alt="${alt}" loading="lazy" />
-    <div class="info">
-      <p class="info-item">
-        <b>Likes</b>
-        ${likes}
-      </p>
-      <p class="info-item">
-        <b>Views</b>
-        ${views}
-      </p>
-      <p class="info-item">
-        <b>Comments</b>
-        ${comments}
-      </p>
-      <p class="info-item">
-        <b>Downloads</b>
-        ${downloads}
-      </p>
-    </div>
-  </div>`
-    )
-    .join('');
+  renderCards(imgArr, refs.gallery);
+  Notify.success(NOTIFY.SUCCESS);
+  imagesLoaded += imgArrLength;
 
-  refs.gallery.insertAdjacentHTML('beforeend', cardsMarkup);
-}
+  if (imagesLoaded >= limit) {
+    Notify.info(NOTIFY.INFO);
+    pageInterface.hide(refs.loadMoreBtn);
+    return;
+  }
 
-function resetPage() {
-  refs.gallery.innerHTML = '';
+  pageInterface.show(refs.loadMoreBtn);
 }
