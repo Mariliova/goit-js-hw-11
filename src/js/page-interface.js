@@ -1,6 +1,6 @@
 export default class PageInterface {
   renderCards(hits, element) {
-    const cardsMarkup = hits.map(
+    const markup = hits.map(
       ({
         webformatURL,
         largeImageURL,
@@ -36,7 +36,7 @@ export default class PageInterface {
   </a>`
     );
 
-    element.insertAdjacentHTML('beforeend', cardsMarkup.join(''));
+    element.insertAdjacentHTML('beforeend', markup.join(''));
   }
 
   reset(element) {
