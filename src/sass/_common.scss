@@ -9,3 +9,19 @@ body {
   color: #212121;
   line-height: 1.5;
 }
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+p {
+  margin: 0;
+}
