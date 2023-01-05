@@ -1,11 +1,9 @@
 import ImagesApiService from './js/images-service';
 import renderCards from './js/render-cards';
 import PageInterface from './js/page-interface';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import NotifyApi from './js/notify-service';
 import 'material-icons/iconfont/material-icons.css';
 import './sass/index.scss';
-
-Notify.init({});
 
 const refs = {
   searchForm: document.querySelector('.search-form'),
@@ -15,14 +13,7 @@ const refs = {
 
 const imagesApiService = new ImagesApiService();
 const pageInterface = new PageInterface();
-let imagesLoaded = 0;
-
-const NOTIFY = {
-  SUCCESS: 'Hooray! We found totalHits images.',
-  FAILURE:
-    'Sorry, there are no images matching your search query. Please try again.',
-  INFO: "We're sorry, but you've reached the end of search results.",
-};
+const notifyApi = new NotifyApi();
 
 pageInterface.hide(refs.loadMoreBtn);
 
@@ -36,6 +27,7 @@ function onSearchFormSubmit(e) {
 
   imagesApiService.query = e.currentTarget.elements.searchQuery.value;
   imagesApiService.resetPageCount();
+  imagesApiService.imagesLoadedCount = 0;
   imagesApiService.fetchImages().then(markup);
 }
 
@@ -44,20 +36,23 @@ function onLoadMoreBtnClick() {
 }
 
 function markup({ data: { hits: imgArr, totalHits: limit } }) {
-  const imgArrLength = imgArr.length;
+  const numberOfImages = imgArr.length;
 
-  if (imgArrLength <= 0) {
-    Notify.failure(NOTIFY.FAILURE);
+  if (numberOfImages <= 0) {
+    notifyApi.failure();
     pageInterface.hide(refs.loadMoreBtn);
     return;
   }
 
   renderCards(imgArr, refs.gallery);
-  Notify.success(NOTIFY.SUCCESS);
-  imagesLoaded += imgArrLength;
+  imagesApiService.imagesLoadedCount = numberOfImages;
 
-  if (imagesLoaded >= limit) {
-    Notify.info(NOTIFY.INFO);
+  if (imagesApiService.imagesLoadedCount === imagesApiService.perPage) {
+    notifyApi.success(limit);
+  }
+
+  if (imagesApiService.imagesLoadedCount >= limit) {
+    notifyApi.info();
     pageInterface.hide(refs.loadMoreBtn);
     return;
   }

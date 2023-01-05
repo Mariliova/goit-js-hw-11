@@ -4,6 +4,8 @@ export default class ImagesApiService {
   constructor() {
     this.searchQquery = '';
     this.page = 1;
+    this.per_page = 40;
+    this.imagesLoaded = 0;
   }
 
   async fetchImages() {
@@ -17,7 +19,7 @@ export default class ImagesApiService {
         safesearch: 'true',
         pretty: 'true',
         page: this.page,
-        per_page: 40,
+        per_page: this.per_page,
       },
     };
 
@@ -43,5 +45,19 @@ export default class ImagesApiService {
   }
   set query(newQuery) {
     this.searchQquery = newQuery;
+  }
+
+  get perPage() {
+    return this.per_page;
+  }
+  set perPage(newPerPage) {
+    this.per_page = newPerPage;
+  }
+
+  get imagesLoadedCount() {
+    return this.imagesLoaded;
+  }
+  set imagesLoadedCount(num) {
+    this.imagesLoaded += num;
   }
 }
