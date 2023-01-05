@@ -2,14 +2,14 @@ import axios from 'axios';
 
 export default class ImagesApiService {
   constructor() {
-    this.searchQquery = '';
-    this.page = 1;
-    this.per_page = 40;
-    this.imagesLoaded = 0;
+    this._query = '';
+    this._page = 1;
+    this._per_page = 40;
+    this._loadedImages = 0;
   }
 
   async fetchImages() {
-    const URL = `https://pixabay.com/api/?q=${this.searchQquery}`;
+    const URL = `https://pixabay.com/api/?q=${this._query}`;
 
     const options = {
       params: {
@@ -18,8 +18,8 @@ export default class ImagesApiService {
         orientation: 'horizontal',
         safesearch: 'true',
         pretty: 'true',
-        page: this.page,
-        per_page: this.per_page,
+        page: this._page,
+        per_page: this._per_page,
       },
     };
 
@@ -33,31 +33,28 @@ export default class ImagesApiService {
   }
 
   incrementPageCount() {
-    this.page += 1;
+    this._page += 1;
   }
 
   resetPageCount() {
-    this.page = 1;
+    this._page = 1;
+  }
+
+  reseLoadedImagesCount() {
+    this._loadedImages = 0;
   }
 
   get query() {
-    return this.searchQquery;
+    return this._query;
   }
   set query(newQuery) {
-    this.searchQquery = newQuery;
+    this._query = newQuery;
   }
 
-  get perPage() {
-    return this.per_page;
+  get loadedImagesCount() {
+    return this._loadedImages;
   }
-  set perPage(newPerPage) {
-    this.per_page = newPerPage;
-  }
-
-  get imagesLoadedCount() {
-    return this.imagesLoaded;
-  }
-  set imagesLoadedCount(num) {
-    this.imagesLoaded += num;
+  set loadedImagesCount(num) {
+    this._loadedImages += num;
   }
 }

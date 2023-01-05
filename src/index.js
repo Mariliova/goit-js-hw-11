@@ -1,5 +1,4 @@
 import ImagesApiService from './js/images-service';
-import renderCards from './js/render-cards';
 import PageInterface from './js/page-interface';
 import NotifyApi from './js/notify-service';
 import SimpleLightbox from 'simplelightbox';
@@ -33,7 +32,7 @@ function onSearchFormSubmit(e) {
 
   imagesApiService.query = e.currentTarget.elements.searchQuery.value;
   imagesApiService.resetPageCount();
-  imagesApiService.imagesLoadedCount = 0;
+  imagesApiService.reseLoadedImagesCount();
   imagesApiService.fetchImages().then(markup);
 }
 
@@ -41,8 +40,11 @@ function onLoadMoreBtnClick() {
   imagesApiService.fetchImages().then(markup);
 }
 
-function markup({ data: { hits: imgArr, totalHits: limit } }) {
-  const numberOfImages = imgArr.length;
+function markup({ data: { hits, totalHits } }) {
+  const numberOfImages = hits.length;
+  const numberOfLoadedImages = imagesApiService.loadedImagesCount;
+
+  console.log(numberOfLoadedImages);
 
   if (numberOfImages <= 0) {
     notifyApi.failure();
@@ -50,15 +52,16 @@ function markup({ data: { hits: imgArr, totalHits: limit } }) {
     return;
   }
 
-  renderCards(imgArr, refs.gallery);
+  pageInterface.renderCards(hits, refs.gallery);
   lightbox.refresh();
-  imagesApiService.imagesLoadedCount = numberOfImages;
 
-  if (imagesApiService.imagesLoadedCount === imagesApiService.perPage) {
-    notifyApi.success(limit);
+  if (numberOfLoadedImages === 0) {
+    notifyApi.success(totalHits);
   }
 
-  if (imagesApiService.imagesLoadedCount >= limit) {
+  imagesApiService.loadedImagesCount = numberOfImages;
+
+  if (numberOfLoadedImages >= totalHits) {
     notifyApi.info();
     pageInterface.hide(refs.loadMoreBtn);
     return;

@@ -2,8 +2,8 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 Notify.init({});
 
 export default class NotifyApi {
-  success(limit) {
-    const message = `Hooray! We found ${limit} images.`;
+  success(totalHits) {
+    const message = `Hooray! We found ${totalHits} images.`;
     Notify.success(message);
   }
 
