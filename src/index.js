@@ -2,7 +2,6 @@ import ImagesApiService from './js/images-service';
 import PageInterface from './js/page-interface';
 import NotifyApi from './js/notify-service';
 import SimpleLightbox from 'simplelightbox';
-import InfiniteScroll from 'infinite-scroll';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import 'material-icons/iconfont/material-icons.css';
 import './sass/index.scss';
@@ -17,18 +16,7 @@ const imagesApiService = new ImagesApiService();
 const pageInterface = new PageInterface();
 const notifyApi = new NotifyApi();
 
-// let infScroll = new InfiniteScroll(refs.gallery, {
-//   path: onLoadMoreBtnClick,
-
-//   append: '.gallery__item',
-//   // REQUIRED for appending content
-//   // Appends selected elements from loaded page to the container
-// });
-
-let lightbox = new SimpleLightbox('.gallery .gallery__item', {
-  captionsData: 'alt',
-  captionDelay: 250,
-});
+let lightbox = new SimpleLightbox('.gallery .gallery__item');
 
 pageInterface.hide(refs.loadMoreBtn);
 
