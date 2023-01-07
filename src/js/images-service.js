@@ -51,10 +51,17 @@ export default class ImagesApiService {
     this._query = newQuery;
   }
 
-  get loadedImagesCount() {
+  get per_page() {
+    return this._per_page;
+  }
+  set per_page(newPerPage) {
+    this._per_page = newPerPage;
+  }
+
+  get loadedImages() {
     return this._loadedImages;
   }
-  set loadedImagesCount(num) {
+  set loadedImages(num) {
     this._loadedImages += num;
   }
 }
